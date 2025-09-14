@@ -45,6 +45,17 @@ public class CharacterMovementHandler : NetworkBehaviour
             {
                 networkCharacterControllerCustom.Jump();
             }
+
+            // Check if we've fallen off the world
+            CheckFallRespawn();
+        }
+    }
+
+    private void CheckFallRespawn()
+    {
+        if (transform.position.y < -12)
+        {
+            transform.position = Utils.GetRandomSpawnPoint();
         }
     }
 
