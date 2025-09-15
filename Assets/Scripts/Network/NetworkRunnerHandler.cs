@@ -13,7 +13,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     {
         networkRunner = Instantiate(networkRunnerPrefab);
         networkRunner.name = "Network runner";
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, NetAddress.Any(), SceneRef.FromIndex(1));
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, NetAddress.Any(), SceneRef.FromIndex(0));
         Debug.Log($"Server NetworkRunner started");
     }
 
