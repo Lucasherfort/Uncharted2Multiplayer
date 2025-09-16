@@ -38,6 +38,8 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             Local = this;
 
+            Camera.main.gameObject.SetActive(false); 
+
             // a changer quand on aura la BDD
             RPC_SetNickName(PlayerPrefs.GetString("PlayerNickname"));
 
@@ -45,6 +47,12 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         }
         else
         {
+            Camera localCamera = GetComponentInChildren<Camera>();
+            localCamera.enabled = false;
+
+            AudioListener audioListener = GetComponentInChildren<AudioListener>();
+            audioListener.enabled = false;
+
             Debug.Log("Spawned remote player");
         }
 

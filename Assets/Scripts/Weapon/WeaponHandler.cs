@@ -65,7 +65,7 @@ public class WeaponHandler : NetworkBehaviour
 
         if (hitinfo.Hitbox != null)
         {
-            Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
+            //Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
 
             if (Object.HasInputAuthority)
             {

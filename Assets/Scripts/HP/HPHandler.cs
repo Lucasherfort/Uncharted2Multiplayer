@@ -2,8 +2,6 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.UI;
 using System.Collections;
-using Fusion.Editor;
-using Mono.Cecil.Cil;
 using System;
 
 public class HPHandler : NetworkBehaviour
@@ -43,14 +41,6 @@ public class HPHandler : NetworkBehaviour
         defaultMeshBodyColor = bodyMeshRenderer.material.color;
 
         isInitialized = true;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            OnTakeDamage();
-        }
     }
 
     public override void Render()
@@ -104,9 +94,11 @@ public class HPHandler : NetworkBehaviour
         if (isDead)
             return;
 
+        Debug.Log("Vie du joueur : "+transform.name+" : "+ HP);
+
         HP -= 1;
 
-        Debug.Log("Vie : " + HP);
+        Debug.Log("Vie du joueur : "+transform.name+" : "+ HP);
 
         // Player died
         if (HP <= 0)
@@ -129,7 +121,6 @@ public class HPHandler : NetworkBehaviour
         if (!isInitialized)
             return;
 
-        Debug.Log("OOOOOKKKKKKKK");
         StartCoroutine(OnHitCO());
     }
 
