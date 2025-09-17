@@ -9,10 +9,19 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     [Networked]
     public NetworkString<_16> nickName { get; set; }
+    bool isPublicJoinMessageSent = false;
+    public LocalCameraHandler localCameraHandler;
+    public GameObject localUI;
+    NetworkInGameMessages networkInGameMessages;
 
     ChangeDetector changeDetector;
 
-    void Start()
+    private void Awake()
+    {
+        networkInGameMessages = GetComponent<NetworkInGameMessages>();
+    }
+
+    private void Start()
     {
 
     }
@@ -38,12 +47,12 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             Local = this;
 
-            Camera.main.gameObject.SetActive(false); 
+            Camera.main.gameObject.SetActive(false);
 
             // a changer quand on aura la BDD
             RPC_SetNickName(PlayerPrefs.GetString("PlayerNickname"));
 
-            Debug.Log("Spawned local player");
+            //Debug.Log("Spawned local player");
         }
         else
         {
@@ -53,29 +62,53 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             AudioListener audioListener = GetComponentInChildren<AudioListener>();
             audioListener.enabled = false;
 
-            Debug.Log("Spawned remote player");
+            localUI.SetActive(false);
+
+            //Debug.Log("Spawned remote player");
         }
 
+        // Set the player as player object
+        Runner.SetPlayerObject(Object.InputAuthority, Object);
+
         transform.name = $"P_{Object.Id}";
+        playerNickNameTM.text = nickName.ToString();
     }
 
     public void PlayerLeft(PlayerRef player)
     {
-        if (player == Object.InputAuthority)
+        if (Object.HasStateAuthority)
         {
-            Runner.Despawn(Object);
+            if (Runner.TryGetPlayerObject(player, out NetworkObject playerLeftNetorkObject))
+            {
+                if (playerLeftNetorkObject == Object)
+                    Local.GetComponent<NetworkInGameMessages>().SendInGameRPCMessage(playerLeftNetorkObject.GetComponent<NetworkPlayer>().nickName.ToString(), "left");  
+            }           
         }
+
+        if (player == Object.InputAuthority)
+            {
+                Runner.Despawn(Object);
+            }
     }
 
     private void OnNickNameChanged()
     {
+        //Debug.Log($"Nickname changed for player to {nickName} for player to {gameObject.name}");
+
         playerNickNameTM.text = nickName.ToString();
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_SetNickName(string nickName, RpcInfo info = default)
     {
+        //Debug.Log($"[RPC] SetNickName {nickName}");
         this.nickName = nickName;
 
+        if (!isPublicJoinMessageSent)
+        {
+            networkInGameMessages.SendInGameRPCMessage(nickName, "joined");
+
+            isPublicJoinMessageSent = true;
+        }
     }
 }

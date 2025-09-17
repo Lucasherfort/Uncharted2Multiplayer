@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 5037488645737053873}
   - component: {fileID: 2966739598778257772}
   - component: {fileID: 2590430872359616883}
+  - component: {fileID: 6343885895401704124}
   m_Layer: 0
   m_Name: NetworkPlayerFP
   m_TagString: Untagged
@@ -71,7 +72,6 @@ Transform:
   m_Children:
   - {fileID: 1886993885094360990}
   - {fileID: 3934670772497452159}
-  - {fileID: 5850985113870696808}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6987974783911439287
@@ -91,6 +91,8 @@ MonoBehaviour:
     _length: 0
     _data:
       Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  localCameraHandler: {fileID: 4277517345741449206}
+  localUI: {fileID: 7087515832918005744}
 --- !u!114 &7552179737964229585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +116,7 @@ MonoBehaviour:
   - {fileID: 5037488645737053873}
   - {fileID: 2966739598778257772}
   - {fileID: 2590430872359616883}
+  - {fileID: 6343885895401704124}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &9008689543814679770
 MonoBehaviour:
@@ -232,11 +235,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7912b4ce16d45b74ca97a8571d1e4e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _HP: 0
   _isDead: 0
   uiOnHitColor: {r: 0.7987421, g: 0.11805301, b: 0.11805301, a: 0.36862746}
   uiOnHitImage: {fileID: 5163022040339190217}
   bodyMeshRenderer: {fileID: 8894412346495968261}
   playerModel: {fileID: 8809923504065619455}
+--- !u!114 &6343885895401704124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824959787469078180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28724c346f4465244be060ec4606e54a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3843718068239169471
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,13 +362,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4134503822562211346}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.009, y: 0.009, z: 0.009}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2177023095122441757}
-  m_Father: {fileID: 3195718435771930101}
+  m_Father: {fileID: 1886993885094360990}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -748,6 +764,7 @@ Transform:
   - {fileID: 4609617259263011039}
   - {fileID: 3903862775840197070}
   - {fileID: 5994202459250305014}
+  - {fileID: 5850985113870696808}
   m_Father: {fileID: 3195718435771930101}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2032183972493209968
@@ -858,6 +875,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6766659619084261284, guid: 5eade32ea91b3114695dcd9595ec2217, type: 3}
+      propertyPath: m_Name
+      value: InGameMessagesCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 7264307685621724326, guid: 5eade32ea91b3114695dcd9595ec2217, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
@@ -887,6 +908,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7087515832918005744 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9108581472964175488, guid: 5eade32ea91b3114695dcd9595ec2217, type: 3}
+  m_PrefabInstance: {fileID: 2032183972493209968}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7693447701364153663
 PrefabInstance:
   m_ObjectHideFlags: 0

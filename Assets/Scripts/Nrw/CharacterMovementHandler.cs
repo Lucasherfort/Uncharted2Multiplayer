@@ -8,11 +8,15 @@ public class CharacterMovementHandler : NetworkBehaviour
 
     NetworkCharacterControllerCustom networkCharacterControllerCustom;
     HPHandler hpHandler;
+    NetworkInGameMessages networkInGameMessages;
+    NetworkPlayer networkPlayer;
 
     private void Awake()
     {
         networkCharacterControllerCustom = GetComponent<NetworkCharacterControllerCustom>();
         hpHandler = GetComponent<HPHandler>();
+        networkInGameMessages = GetComponent<NetworkInGameMessages>();
+        networkPlayer = GetComponent<NetworkPlayer>(); 
     }
 
     public override void FixedUpdateNetwork()
@@ -62,6 +66,8 @@ public class CharacterMovementHandler : NetworkBehaviour
         {
             if (Object.HasInputAuthority)
             {
+                networkInGameMessages.SendInGameRPCMessage(networkPlayer.nickName.ToString(), "fell off the world");
+
                 Respawn();
             }
         }

@@ -15,10 +15,12 @@ public class WeaponHandler : NetworkBehaviour
 
     float lastTimeFired = 0;
     HPHandler hPHandler;
+    NetworkPlayer networkPlayer;
 
     private void Awake()
     {
         hPHandler = GetComponent<HPHandler>();
+        networkPlayer = GetBehaviour<NetworkPlayer>();
     }
 
     public override void FixedUpdateNetwork()
@@ -55,7 +57,7 @@ public class WeaponHandler : NetworkBehaviour
 
         StartCoroutine(FireEffectCO());    
 
-        Runner.LagCompensation.Raycast(aimPoint.position, aimForwardVector, 100, Object.InputAuthority, out var hitinfo, collisionLayers, HitOptions.IncludePhysX);
+        Runner.LagCompensation.Raycast(aimPoint.position, aimForwardVector, 100, Object.InputAuthority, out var hitinfo, collisionLayers, HitOptions.IgnoreInputAuthority);
 
         float hitDistance = 100;
         bool isHitOtherPlayer = false;
@@ -65,12 +67,12 @@ public class WeaponHandler : NetworkBehaviour
 
         if (hitinfo.Hitbox != null)
         {
-            Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
+            //Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
 
             if (Object.HasStateAuthority)
             {
-                Debug.Log($"{Time.time} {transform.name} call OnTakeDamage {hitinfo.Hitbox.transform.root.name}");
-                hitinfo.Hitbox.transform.root.GetComponent<HPHandler>().OnTakeDamage();
+                //Debug.Log($"{Time.time} {transform.name} call OnTakeDamage {hitinfo.Hitbox.transform.root.name}");
+                hitinfo.Hitbox.transform.root.GetComponent<HPHandler>().OnTakeDamage(networkPlayer.nickName.ToString());
             }
 
             isHitOtherPlayer = true;
@@ -78,7 +80,7 @@ public class WeaponHandler : NetworkBehaviour
         }
         else if (hitinfo.Collider != null)
         {
-            Debug.Log($"{Time.time} {transform.name} hit collider {hitinfo.Collider.transform.name}");
+            //Debug.Log($"{Time.time} {transform.name} hit collider {hitinfo.Collider.transform.name}");
         }
 
         if (isHitOtherPlayer)

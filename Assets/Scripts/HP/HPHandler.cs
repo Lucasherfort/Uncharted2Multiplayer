@@ -24,6 +24,8 @@ public class HPHandler : NetworkBehaviour
     public GameObject playerModel;
     HitboxRoot hitboxRoot;
     CharacterMovementHandler characterMovementHandler;
+    NetworkInGameMessages networkInGameMessages;
+    NetworkPlayer networkPlayer;
 
     ChangeDetector changeDetector;
 
@@ -31,6 +33,8 @@ public class HPHandler : NetworkBehaviour
     {
         characterMovementHandler = GetComponent<CharacterMovementHandler>();
         hitboxRoot = GetComponentInChildren<HitboxRoot>();
+        networkInGameMessages = GetComponent<NetworkInGameMessages>();
+        networkPlayer = GetComponent<NetworkPlayer>(); 
     }
 
     private void Start()
@@ -41,14 +45,6 @@ public class HPHandler : NetworkBehaviour
         defaultMeshBodyColor = bodyMeshRenderer.material.color;
 
         isInitialized = true;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            OnTakeDamage();
-        }
     }
 
     public override void Render()
@@ -97,7 +93,7 @@ public class HPHandler : NetworkBehaviour
     }
 
     // Only called on the server
-    public void OnTakeDamage()
+    public void OnTakeDamage(string damageCauseByPlayerNickname)
     {
         if (isDead)
             return;
@@ -107,7 +103,7 @@ public class HPHandler : NetworkBehaviour
         // Player died
         if (HP <= 0)
         {
-            Debug.Log("Le joueur " + transform.name + " est mort");
+            networkInGameMessages.SendInGameRPCMessage(damageCauseByPlayerNickname, $"killed <b>{networkPlayer.nickName.ToString()}</b>");
             StartCoroutine(ServerReviveCO());
             isDead = true;
         }
