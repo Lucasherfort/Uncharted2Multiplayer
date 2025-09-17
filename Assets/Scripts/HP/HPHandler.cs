@@ -7,7 +7,7 @@ using System;
 public class HPHandler : NetworkBehaviour
 {
     [Networked]
-    byte HP { get; set; }
+    public byte HP { get; set; }
 
     [Networked]
     public bool isDead { get; set; }
@@ -43,6 +43,14 @@ public class HPHandler : NetworkBehaviour
         isInitialized = true;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            OnTakeDamage();
+        }
+    }
+
     public override void Render()
     {
         foreach (var change in changeDetector.DetectChanges(this, out var previousBuffer, out var currentBuffer))
@@ -50,7 +58,7 @@ public class HPHandler : NetworkBehaviour
             switch (change)
             {
                 case nameof(HP):
-                    var byteReader = GetPropertyReader<Byte>(nameof(HP));
+                    var byteReader = GetPropertyReader<byte>(nameof(HP));
                     var (previousByte, currentByte) = byteReader.Read(previousBuffer, currentBuffer);
                     OnHPChanged(previousByte, currentByte);
                     break;
@@ -94,17 +102,12 @@ public class HPHandler : NetworkBehaviour
         if (isDead)
             return;
 
-        Debug.Log("Vie du joueur : "+transform.name+" : "+ HP);
-
         HP -= 1;
-
-        Debug.Log("Vie du joueur : "+transform.name+" : "+ HP);
 
         // Player died
         if (HP <= 0)
         {
-            Debug.Log("Je suis mort");
-
+            Debug.Log("Le joueur " + transform.name + " est mort");
             StartCoroutine(ServerReviveCO());
             isDead = true;
         }
@@ -126,6 +129,9 @@ public class HPHandler : NetworkBehaviour
 
     void OnStateChanged(bool previous, bool current)
     {
+        Debug.Log(previous);
+        Debug.Log(current);        
+
         if (current)
         {
             OnDeath();

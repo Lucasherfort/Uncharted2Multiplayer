@@ -17,7 +17,7 @@ public class CharacterMovementHandler : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (Object.HasInputAuthority)
+        if (Object.HasStateAuthority)
         {
             if (isRespawnRequested)
             {

@@ -65,10 +65,11 @@ public class WeaponHandler : NetworkBehaviour
 
         if (hitinfo.Hitbox != null)
         {
-            //Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
+            Debug.Log($"{Time.time} {transform.name} hit hitbox {hitinfo.Hitbox.transform.root.name}");
 
-            if (Object.HasInputAuthority)
+            if (Object.HasStateAuthority)
             {
+                Debug.Log($"{Time.time} {transform.name} call OnTakeDamage {hitinfo.Hitbox.transform.root.name}");
                 hitinfo.Hitbox.transform.root.GetComponent<HPHandler>().OnTakeDamage();
             }
 
