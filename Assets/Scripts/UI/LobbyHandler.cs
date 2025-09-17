@@ -19,6 +19,8 @@ public class LobbyHandler : MonoBehaviour
         PlayerPrefs.SetString("PlayerNickname", inputField.text);
         PlayerPrefs.Save();
 
+        GameManager.instance.playerNickName = inputField.text;
+
         SceneManager.LoadScene("World1");
     }
 }

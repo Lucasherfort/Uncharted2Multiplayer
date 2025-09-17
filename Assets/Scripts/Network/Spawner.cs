@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
@@ -10,14 +11,56 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     public NetworkPlayer playerPrefab;
 
+    Dictionary<int, NetworkPlayer> mapTokenIDWithNetworkPlayer;
+
     CharacterInputHandler characterInputHandler;
+
+    private void Awake()
+    {
+        mapTokenIDWithNetworkPlayer = new Dictionary<int, NetworkPlayer>();
+    }
+
+    int GetPlayerToken(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.LocalPlayer == player)
+        {
+            return ConnectionTokenUtils.HasToken(GameManager.instance.GetConnectionToken());
+        }
+        else
+        {
+            var token = runner.GetPlayerConnectionToken(player);
+            if (token != null)
+                return ConnectionTokenUtils.HasToken(token);
+
+            return 0;
+        }
+    }
+
+    public void SetConnectionTokenMapping(int token, NetworkPlayer networkPlayer)
+    {
+        mapTokenIDWithNetworkPlayer.Add(token, networkPlayer);
+    }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
         {
-            Debug.Log("OnPlayerJoined we are server. Spawning player");
-            runner.Spawn(playerPrefab, Utils.GetRandomSpawnPoint(), Quaternion.identity, player);
+            int playerToken = GetPlayerToken(runner, player);
+
+            if (mapTokenIDWithNetworkPlayer.TryGetValue(playerToken, out NetworkPlayer networkPlayer))
+            {
+                networkPlayer.GetComponent<NetworkObject>().AssignInputAuthority(player);
+
+                networkPlayer.Spawned();
+            }
+            else
+            {
+                NetworkPlayer spawnedNetworkPlayer = runner.Spawn(playerPrefab, Utils.GetRandomSpawnPoint(), Quaternion.identity, player);
+
+                spawnedNetworkPlayer.token = playerToken;
+
+                mapTokenIDWithNetworkPlayer[playerToken] = spawnedNetworkPlayer;
+            }
         }
         else
         {
@@ -64,9 +107,11 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     }
 
-    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+    public async void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
     {
+        await runner.Shutdown(shutdownReason: ShutdownReason.HostMigration);
 
+        FindObjectOfType<NetworkRunnerHandler>().StartHostMigration(hostMigrationToken);
     }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
@@ -121,5 +166,18 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
 
+    }
+
+    public void OnHostMigrationCleanUp()
+    {
+        foreach (KeyValuePair<int, NetworkPlayer> entry in mapTokenIDWithNetworkPlayer)
+        {
+            NetworkObject networkObjetInDictionnary = entry.Value.GetComponent<NetworkObject>();
+
+            if (networkObjetInDictionnary.InputAuthority.IsNone)
+            {
+                networkObjetInDictionnary.Runner.Despawn(networkObjetInDictionnary);
+            }
+        }
     }
 }

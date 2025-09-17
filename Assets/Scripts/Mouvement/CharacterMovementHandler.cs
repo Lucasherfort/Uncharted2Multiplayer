@@ -6,14 +6,14 @@ public class CharacterMovementHandler : NetworkBehaviour
 {
     bool isRespawnRequested = false;
 
-    NetworkCharacterControllerCustom networkCharacterControllerCustom;
+    NetworkCharacterController networkCharacterController;
     HPHandler hpHandler;
     NetworkInGameMessages networkInGameMessages;
     NetworkPlayer networkPlayer;
 
     private void Awake()
     {
-        networkCharacterControllerCustom = GetComponent<NetworkCharacterControllerCustom>();
+        networkCharacterController = GetComponent<NetworkCharacterController>();
         hpHandler = GetComponent<HPHandler>();
         networkInGameMessages = GetComponent<NetworkInGameMessages>();
         networkPlayer = GetComponent<NetworkPlayer>(); 
@@ -47,12 +47,12 @@ public class CharacterMovementHandler : NetworkBehaviour
                 Vector3 moveDirection = transform.forward * networkInputData.movementInput.y + transform.right * networkInputData.movementInput.x;
                 moveDirection.Normalize();
 
-                networkCharacterControllerCustom.Move(moveDirection);
+                networkCharacterController.Move(moveDirection);
 
                 // Jump
                 if (networkInputData.isJumpPressed)
                 {
-                    networkCharacterControllerCustom.Jump();
+                    networkCharacterController.Jump();
                 }
 
                 // Check if we've fallen off the world
@@ -80,13 +80,13 @@ public class CharacterMovementHandler : NetworkBehaviour
 
     private void Respawn()
     {
-        networkCharacterControllerCustom.Teleport(Utils.GetRandomSpawnPoint());
+        networkCharacterController.Teleport(Utils.GetRandomSpawnPoint());
         hpHandler.OnRespawned();
         isRespawnRequested = false;
     }
 
     public void SetCharacterControllerEnabled(bool isEnabled)
     {
-        networkCharacterControllerCustom.enabled = isEnabled;
+        networkCharacterController.enabled = isEnabled;
     }
 }

@@ -22,6 +22,9 @@ public class HPHandler : NetworkBehaviour
     Color defaultMeshBodyColor;
 
     public GameObject playerModel;
+
+    public bool skipSettingsStartValues = false;
+
     HitboxRoot hitboxRoot;
     CharacterMovementHandler characterMovementHandler;
     NetworkInGameMessages networkInGameMessages;
@@ -39,8 +42,11 @@ public class HPHandler : NetworkBehaviour
 
     private void Start()
     {
-        HP = startingHP;
-        isDead = false;
+        if (!skipSettingsStartValues)
+        {
+            HP = startingHP;
+            isDead = false;   
+        }
 
         defaultMeshBodyColor = bodyMeshRenderer.material.color;
 

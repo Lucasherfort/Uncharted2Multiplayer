@@ -12,21 +12,19 @@ public class LocalCameraHandler : MonoBehaviour
     float cameraRotationY = 0;
 
     //Other components
-    NetworkCharacterControllerCustom networkCharacterControllerCustom;
-    Camera localCamera;
+    NetworkCharacterController networkCharacterController;
+    public Camera localCamera;
 
     private void Awake()
     {
         localCamera = GetComponent<Camera>();
-        networkCharacterControllerCustom = GetComponentInParent<NetworkCharacterControllerCustom>();
+        networkCharacterController = GetComponentInParent<NetworkCharacterController>();
     }
 
     private void Start()
     {
-        if (localCamera.enabled)
-        {
-            localCamera.transform.parent = null;
-        }
+        cameraRotationX = GameManager.instance.cameraViewRotation.x;
+        cameraRotationY = GameManager.instance.cameraViewRotation.y;
     }
 
     private void LateUpdate()
@@ -44,10 +42,10 @@ public class LocalCameraHandler : MonoBehaviour
         localCamera.transform.position = cameraAnchorPoint.position;
 
         // Calculate rotation
-        cameraRotationX += viewInput.y * Time.deltaTime * networkCharacterControllerCustom.viewUpDownRotationSpeed;
+        cameraRotationX += viewInput.y * Time.deltaTime * 40;
         cameraRotationX = Mathf.Clamp(cameraRotationX, -90, 90);
 
-        cameraRotationY += viewInput.x * Time.deltaTime * networkCharacterControllerCustom.rotationSpeed;
+        cameraRotationY += viewInput.x * Time.deltaTime * networkCharacterController.rotationSpeed;
 
         // Apply rotation
         localCamera.transform.rotation = Quaternion.Euler(cameraRotationX, cameraRotationY, 0);
@@ -56,5 +54,14 @@ public class LocalCameraHandler : MonoBehaviour
     public void SetViewInputVector(Vector2 viewInout)
     {
         this.viewInput = viewInout;
+    }
+
+    private void OnDestroy()
+    {
+        if (cameraRotationX != 0 && cameraRotationY != 0)
+        {
+            GameManager.instance.cameraViewRotation.x = cameraRotationX;
+            GameManager.instance.cameraViewRotation.y = cameraRotationY;           
+        }
     }
 }

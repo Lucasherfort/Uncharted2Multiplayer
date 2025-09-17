@@ -45,11 +45,11 @@ GameObject:
   - component: {fileID: 9008689543814679770}
   - component: {fileID: 7875904667810530832}
   - component: {fileID: 7076830838123733041}
-  - component: {fileID: 4150174048836954509}
   - component: {fileID: 5037488645737053873}
   - component: {fileID: 2966739598778257772}
   - component: {fileID: 2590430872359616883}
   - component: {fileID: 6343885895401704124}
+  - component: {fileID: 23972490615441085}
   m_Layer: 0
   m_Name: NetworkPlayerFP
   m_TagString: Untagged
@@ -112,11 +112,11 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 6987974783911439287}
   - {fileID: 9008689543814679770}
-  - {fileID: 4150174048836954509}
   - {fileID: 5037488645737053873}
   - {fileID: 2966739598778257772}
   - {fileID: 2590430872359616883}
   - {fileID: 6343885895401704124}
+  - {fileID: 23972490615441085}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &9008689543814679770
 MonoBehaviour:
@@ -168,26 +168,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4150174048836954509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824959787469078180}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751f28f2ebb6eab41ab61d2d77d1c4d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 50
-  braking: 30
-  maxSpeed: 6
-  rotationSpeed: 80
-  viewUpDownRotationSpeed: 60
 --- !u!114 &5037488645737053873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,6 +233,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28724c346f4465244be060ec4606e54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &23972490615441085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824959787469078180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 50
+  braking: 50
+  maxSpeed: 12
+  rotationSpeed: 80
 --- !u!1 &3843718068239169471
 GameObject:
   m_ObjectHideFlags: 0
