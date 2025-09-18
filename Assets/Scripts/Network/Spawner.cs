@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -15,9 +12,12 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     CharacterInputHandler characterInputHandler;
 
+    private NetworkRunnerHandler runnerHandler;
+
     private void Awake()
     {
         mapTokenIDWithNetworkPlayer = new Dictionary<int, NetworkPlayer>();
+        runnerHandler = FindObjectOfType<NetworkRunnerHandler>();
     }
 
     int GetPlayerToken(NetworkRunner runner, PlayerRef player)
@@ -155,7 +155,19 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-
+        if (sessionList.Count == 0)
+        {
+            Debug.Log("Joined lobby, no session found → create one");
+            runnerHandler.CreateGame("TestSession", "GameScene"); 
+        }
+        else
+        {
+            // Ici je prends la première session trouvée, 
+            // tu pourrais ajouter une logique de filtrage
+            SessionInfo sessionToJoin = sessionList[0];
+            Debug.Log($"Session found → join {sessionToJoin.Name}");
+            runnerHandler.JoinGame(sessionToJoin);
+        }
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

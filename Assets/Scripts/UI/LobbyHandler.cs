@@ -21,6 +21,8 @@ public class LobbyHandler : MonoBehaviour
 
         GameManager.instance.playerNickName = inputField.text;
 
-        SceneManager.LoadScene("World1");
+        NetworkRunnerHandler networkRunnerHandler = FindObjectOfType<NetworkRunnerHandler>();
+
+        networkRunnerHandler.OnJoinLobby();
     }
 }
