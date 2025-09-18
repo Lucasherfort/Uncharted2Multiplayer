@@ -64,7 +64,9 @@ public class CharacterMovementHandler : NetworkBehaviour
     {
         if (transform.position.y < -12)
         {
-            if (Object.HasInputAuthority)
+            Debug.Log("OOOOOOOOOKKKKKKKKKKKKKKKK");
+
+            if (Object.HasStateAuthority)
             {
                 networkInGameMessages.SendInGameRPCMessage(networkPlayer.nickName.ToString(), "fell off the world");
 
