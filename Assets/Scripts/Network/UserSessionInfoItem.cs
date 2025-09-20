@@ -18,7 +18,20 @@ public class UserSessionInfoItem : MonoBehaviour
     {
         if (IsSearchingPlayers)
         {
-            icon.transform.Rotate(Vector3.forward * -400 * Time.deltaTime);   
+            icon.transform.Rotate(Vector3.forward * -400 * Time.deltaTime);
         }
+    }
+
+    public void SetItemInfos(PlayerInfo data)
+    {
+        IsSearchingPlayers = false;
+        icon.transform.rotation = Quaternion.identity;
+        PlayerNicknameText.text = (string)data.username;
+        icon.sprite = Resources.Load<Sprite>("BadgeLevel/"+data.xp);
+    }
+
+    public void RemoveItemInfos()
+    {
+        IsSearchingPlayers = true;
     }
 }

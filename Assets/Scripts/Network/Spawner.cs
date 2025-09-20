@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     CharacterInputHandler characterInputHandler;
 
     private NetworkRunnerHandler runnerHandler;
+
+    private Dictionary<PlayerRef, PlayerInfo> players = new Dictionary<PlayerRef, PlayerInfo>();
+
 
     private void Awake()
     {
@@ -43,8 +47,34 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+// Exemple : récupérer le pseudo depuis le client
+    string playerName = "Joueur_" + player.PlayerId; // Remplace par ton système réel
+    int xp = 1; // valeur par défaut ou récupérée côté client
+
+    // Ajouter dans le dictionnaire
+    players[player] = new PlayerInfo(playerName, xp, player);
+    
+    // Créer la liste à partir du dictionnaire
+    List<PlayerInfo> playerList = new List<PlayerInfo>(players.Values);
+    
+    // Récupérer le composant UI
+    UsersSessionListHandler uiHandler = FindObjectOfType<UsersSessionListHandler>();
+    if (uiHandler != null)
+    {
+        // Passer le PlayerRef local pour que l'UI puisse mettre le joueur local en premier
+        uiHandler.OnUpdatePlayersList(playerList, runner.LocalPlayer);
+    }
+/*
+                                        var token = runner.GetPlayerConnectionToken(player);
+
+                                        string json = System.Text.Encoding.UTF8.GetString(token);
+                                        PlayerInfo info = JsonUtility.FromJson<PlayerInfo>(json);
+                                        */
+
+
         if (runner.IsServer)
         {
+            /*
             int playerToken = GetPlayerToken(runner, player);
 
             if (mapTokenIDWithNetworkPlayer.TryGetValue(playerToken, out NetworkPlayer networkPlayer))
@@ -61,10 +91,11 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
                 mapTokenIDWithNetworkPlayer[playerToken] = spawnedNetworkPlayer;
             }
+            */
         }
         else
         {
-            Debug.Log("OnPlayerKoined");
+
         }
     }
 
@@ -130,7 +161,14 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        if (players.ContainsKey(player))
+        players.Remove(player);
 
+        // Afficher la liste mise à jour
+        foreach (var p in players.Values)
+        {
+            Debug.Log($"Pseudo: {p.username}, XP: {p.xp}");
+        }
     }
 
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
